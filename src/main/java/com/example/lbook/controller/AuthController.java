@@ -38,7 +38,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.logout(request, response));
     }
 
-    @GetMapping("/confirm/{userId}")
+    @PostMapping("/confirm/{userId}")
     public ResponseData<String> confirm(@Min(1) @PathVariable Long userId, @RequestBody OTPForm otpForm) {
         log.info("Confirm user, userId={}, otpCode={}", userId, otpForm.getOtpCode());
 
