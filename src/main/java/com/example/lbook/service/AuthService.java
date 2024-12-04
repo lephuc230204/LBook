@@ -10,9 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 public interface AuthService {
     AuthDto login(SignInForm form);
     ResponseData<String> register(SignUpForm form);
-
-    ResponseData<String> register(SignUpForm form);
-
     String confirmUser(long userId, String otpCode);
     ResponseData<String> logout(HttpServletRequest request, HttpServletResponse response);
 }
