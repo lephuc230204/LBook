@@ -26,8 +26,9 @@ public class Comment {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private String authorName;  // Tên người bình luận
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_name")
+    private User authorName;  // Tên người bình luận
 
     private LocalDate createdDate;  // Ngày tạo bình luận
 }
