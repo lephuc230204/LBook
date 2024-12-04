@@ -82,7 +82,7 @@ public class BookPostServiceImpl implements BookPostService {
         bookPost.setLikes(bookPost.getLikes() + 1);
 
         bookPostRepository.save(bookPost);
-        return "Likes updated.";
+        return "Likes updated ";
     }
 
     @Override
