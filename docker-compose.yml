@@ -22,3 +22,27 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
+
+  medical_appointment_app:
+    image: medical_appointment_booking_app
+    build: .
+    ports:
+      - "8079:8080"  # Ánh xạ cổng của container ứng dụng tới cổng 8079 trên host
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/medical_appointment_db  # Sử dụng tên dịch vụ 'db' trong Docker Compose
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123456
+      - JWT_SECRET=ahihihih  # Nếu cần, cấu hình thêm JWT secret
+      - JWT_EXPIRATION=86400000
+    depends_on:
+      - db  # Đảm bảo rằng ứng dụng Spring Boot khởi động sau khi PostgreSQL đã sẵn sàng
+
+  # Cơ sở dữ liệu PostgreSQL
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=medical_appointment_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+    ports:
+      - "5431:5432"
