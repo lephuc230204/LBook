@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookPostServiceImpl implements BookPostService {
@@ -69,8 +70,10 @@ public class BookPostServiceImpl implements BookPostService {
 
     @Override
     public List<BookPostDto> getAll() {
-
-        return List.of();
+        return bookPostRepository.findAll()
+                .stream()
+                .map(BookPostDto::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -5,6 +5,10 @@ import com.example.lbook.dto.rq.BookForm;
 import com.example.lbook.entity.Author;
 import com.example.lbook.entity.Category;
 
+import java.util.List;
+
 public interface BookService {
     BookDto createBook(BookForm bookForm);
+    List<BookDto> getMyBooks();
+    BookDto getBookById(Long bookId);
 }

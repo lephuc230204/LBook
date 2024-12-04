@@ -21,6 +21,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -82,6 +84,19 @@ public class BookServiceImpl implements BookService {
 
         log.info("Book created successfully with ID: {}", newBook.getBookId());
         return BookDto.toDto(newBook);
+    }
+
+    @Override
+    public List<BookDto> getMyBooks() {
+        return bookRepository.findAll()
+                .stream()
+                .map(BookDto::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BookDto getBookById(Long bookId) {
+        return BookDto.toDto(bookRepository.findById(bookId).orElse(null));
     }
 
 }
