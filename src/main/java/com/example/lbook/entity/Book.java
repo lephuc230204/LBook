@@ -24,6 +24,10 @@ public class Book {
     private String bookName;
 
     @ManyToOne
+    @JoinColumn (name = "user_id",nullable = false)
+    private User user;
+
+    @ManyToOne
     @JoinColumn(name ="author_id", nullable = false)
     private Author author;
 
