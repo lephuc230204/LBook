@@ -1,0 +1,32 @@
+package com.example.lbook.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Entity
+@Table(name ="book_post")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class BookPost {
+    @Id
+    @GeneratedValue( strategy = GenerationType.IDENTITY)
+    private Long bookPostId;
+
+    private String title;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn( name = "bookId", nullable = false)
+    private Book book;
+
+    private Long like;
+
+    @OneToMany(mappedBy = "bookPost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments;
+}
