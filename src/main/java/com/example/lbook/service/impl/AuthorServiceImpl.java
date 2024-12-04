@@ -16,7 +16,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Author checkOrCreateAuthor(String authorName) {
-        Author author = authorRepository.findByName(authorName).orElse(null);
+        Author author = authorRepository.findByAuthorName(authorName).orElse(null);
         if (author == null) {
             log.info("Creating a new Author "+authorName);
             author = new Author();

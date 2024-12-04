@@ -25,7 +25,7 @@ public class BookPost {
     @JoinColumn( name = "bookId", nullable = false)
     private Book book;
 
-    private Long like;
+    private Long likes;
 
     @OneToMany(mappedBy = "bookPost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
