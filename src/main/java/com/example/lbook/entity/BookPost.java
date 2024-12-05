@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -25,7 +27,11 @@ public class BookPost {
     @JoinColumn( name = "bookId", nullable = false)
     private Book book;
 
-    private Long likes;
+    private Long likes =0L;
+
+    private LocalDate postingDate;
+
+    private String image;
 
     @OneToMany(mappedBy = "bookPost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;

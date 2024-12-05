@@ -9,6 +9,12 @@ import java.util.List;
 
 public interface BookService {
     BookDto createBook(BookForm bookForm);
+
     List<BookDto> getMyBooks();
+
     BookDto getBookById(Long bookId);
+
+    String updateBook(BookForm bookForm, Long bookId);
+
+    String deleteBook(Long bookId);
 }

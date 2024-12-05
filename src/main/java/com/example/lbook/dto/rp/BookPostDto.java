@@ -18,7 +18,6 @@ public class BookPostDto {
     private String title;
     private String bookImage;
     private Long likes;
-    private List<Comment> comments;
 
     public static BookPostDto toDto(BookPost bookPost) {
         return BookPostDto.builder()
@@ -26,7 +25,6 @@ public class BookPostDto {
                 .title(bookPost.getTitle())
                 .bookImage(bookPost.getBook() != null ? bookPost.getBook().getImage() : null)
                 .likes(bookPost.getLikes())
-                .comments(bookPost.getComments())
                 .build();
     }
 }

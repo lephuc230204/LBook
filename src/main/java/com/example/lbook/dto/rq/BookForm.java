@@ -15,7 +15,5 @@ public class BookForm {
     private String description;
     private Long amount;
     private MultipartFile image;
-    private LocalDate postingDate;
-    private boolean isApproved;
 
 }
