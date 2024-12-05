@@ -25,7 +25,7 @@ public class BookPostDto {
                 .bookPostId(bookPost.getBookPostId())
                 .title(bookPost.getTitle())
                 .bookImage(bookPost.getBook() != null ? bookPost.getBook().getImage() : null)
-                .like(bookPost.getLike())
+                .like(bookPost.getLikes())
                 .comments(bookPost.getComments())
                 .build();
     }
