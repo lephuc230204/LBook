@@ -39,9 +39,6 @@ public class SecurityConfig {
                                 "/api/v1/auth/**"
                         ).permitAll()
                         .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers("/api/v1/manager/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
-                        .requestMatchers("/api/v1/designs/**").hasAnyAuthority("ROLE_DESIGN_STAFF", "ROLE_MANAGER")
-                        .requestMatchers("/api/v1/consulting-staff/**").hasAnyAuthority("ROLE_CONSULTING_STAFF", "ROLE_MANAGER")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(userDetailsService)

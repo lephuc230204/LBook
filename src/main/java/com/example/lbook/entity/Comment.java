@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "comment")
@@ -27,8 +29,22 @@ public class Comment {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_name")
-    private User authorName;  // Tên người bình luận
+    @JoinColumn(name="user_id")
+    private User user;  // Tên người bình luận
+
+    private Long likes = 0L;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_comment_id") // Liên kết đệ quy
+    private Comment parentComment;
+
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> replies = new ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "comment_liked_users", joinColumns = @JoinColumn(name = "comment_id"))
+    @Column(name = "user_id")
+    private List<Long> likedUsers = new ArrayList<>();
 
     private LocalDate createdDate;  // Ngày tạo bình luận
 }
