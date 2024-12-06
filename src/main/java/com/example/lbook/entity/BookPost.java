@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -39,4 +40,10 @@ public class BookPost {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User user;
+
+    @ElementCollection
+    @CollectionTable(name = "comment_liked_users", joinColumns = @JoinColumn(name = "comment_id"))
+    @Column(name = "user_id")
+    private List<Long> likedUsers = new ArrayList<>();
+
 }

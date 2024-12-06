@@ -10,5 +10,4 @@ public class BookPostForm {
     private String title;
     private Long bookId;
     private MultipartFile image;
-    private LocalDate postingDate;
 }

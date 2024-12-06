@@ -3,6 +3,7 @@ package com.example.lbook.controller;
 import com.example.lbook.dto.rp.BookPostDto;
 import com.example.lbook.dto.rq.BookPostForm;
 import com.example.lbook.service.BookPostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +16,8 @@ import java.util.List;
 public class BookPostController {
     private final BookPostService bookPostService;
 
-    @PostMapping("")
-    public ResponseEntity<BookPostDto> create(@RequestBody BookPostForm form) {
+    @PostMapping("/creat")
+    public ResponseEntity<BookPostDto> create(@Valid @ModelAttribute BookPostForm form) {
         return ResponseEntity.ok(bookPostService.create(form));
     }
 
@@ -25,9 +26,9 @@ public class BookPostController {
         return ResponseEntity.ok(bookPostService.getAll());
     }
 
-    @PostMapping("/like-post/{bookId}")
-    public ResponseEntity<String> liksPost(@PathVariable Long bookId) {
-        return ResponseEntity.ok(bookPostService.likesPost(bookId));
+    @PostMapping("/like-bookPost/{bookPostId}")
+    public ResponseEntity<String> likePost(@PathVariable Long bookPostId) {
+        return ResponseEntity.ok(bookPostService.likePost(bookPostId));
     }
 
     @DeleteMapping("/delete/{bookId}")

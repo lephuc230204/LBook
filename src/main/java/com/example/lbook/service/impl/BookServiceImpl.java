@@ -117,7 +117,8 @@ public class BookServiceImpl implements BookService {
 
         log.info("Update book");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
+        String email = auth.getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AccessDeniedException("User is not authorized"));
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new UsernameNotFoundException("Post not found"));
 
         if (user.getUserId() != book.getUser().getId()) {
@@ -140,10 +141,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public String deleteBook(Long bookId) {
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
-        User user = (User) auth.getPrincipal();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AccessDeniedException("User is not authorized"));
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new UsernameNotFoundException("Post not found"));
         if(user.getUserId() != book.getUser().getId()) {
