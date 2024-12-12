@@ -1,9 +1,6 @@
 package com.example.lbook.entity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -66,8 +64,23 @@ public class User implements UserDetails {
         return true;
     }
 
+    @Setter
+    @Getter
+    @OneToMany(mappedBy = "follower")
+    private Set<Follow> following;
+
+    @Getter
+    @Setter
+    @OneToMany(mappedBy = "followed")
+    private Set<Follow> followers;
+
     @Override
     public boolean isCredentialsNonExpired() { return true; }
+
+    // Thêm constructor nhận ID
+    public User(Long userId) {
+        this.userId = userId;
+    }
 
     public Long getId() {
         return userId;
@@ -76,4 +89,5 @@ public class User implements UserDetails {
     public void setId(Long id) {
         this.userId = id;
     }
+
 }
