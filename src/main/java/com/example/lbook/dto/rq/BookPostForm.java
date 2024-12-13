@@ -8,13 +8,6 @@ import java.time.LocalDate;
 @Data
 public class BookPostForm {
     private String title;
-    private String bookName;
-    private String author;
-    private String category;
-    private Long amount;
-    private Double price;
-    private String description;
+    private Long bookId;
     private MultipartFile image;
-    private LocalDate postingDate;
-    private boolean isApproved;
 }

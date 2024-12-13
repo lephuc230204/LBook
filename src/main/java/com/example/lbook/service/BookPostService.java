@@ -12,7 +12,7 @@ public interface BookPostService {
 
     List<BookPostDto> getAll();
 
-    String likesPost(Long bookPostId);
-
     String deletePost(Long bookPostId);
+
+    String likePost(Long bookPostId);
 }

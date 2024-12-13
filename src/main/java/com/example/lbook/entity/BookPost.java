@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,7 +28,11 @@ public class BookPost {
     @JoinColumn( name = "bookId", nullable = false)
     private Book book;
 
-    private Long likes;
+    private Long likes =0L;
+
+    private LocalDate postingDate;
+
+    private String image;
 
     @OneToMany(mappedBy = "bookPost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
@@ -33,4 +40,10 @@ public class BookPost {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User user;
+
+    @ElementCollection
+    @CollectionTable(name = "comment_liked_users", joinColumns = @JoinColumn(name = "comment_id"))
+    @Column(name = "user_id")
+    private List<Long> likedUsers = new ArrayList<>();
+
 }
