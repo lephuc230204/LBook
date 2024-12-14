@@ -8,5 +8,6 @@ import com.example.lbook.entity.CartItem;
 import java.util.List;
 
 public interface OrderService {
-    ResponseData<OrderDto> createOrder(OrderForm form, List<CartItem> cartItems);
+    ResponseData<OrderDto> createOrder(OrderForm form);
+    ;
 }

@@ -64,7 +64,7 @@ public class CartItemServiceImpl implements CartItemService {
             return new ResponseError<>(400, "Book is approved and cannot be added to the cart");
         }
 
-        if (cartItemForm.getAmount() > book.getCurrentAmount()) {
+        if (cartItemForm.getAmount() > book.getCurrentQuantity()) {
             log.error("Requested quantity is greater than available quantity");
             return new ResponseError<>(400, "Requested quantity is greater than available quantity");
         }
@@ -78,7 +78,7 @@ public class CartItemServiceImpl implements CartItemService {
 
             Long newAmount = itemToUpdate.getAmount() + cartItemForm.getAmount();
 
-            if (newAmount > book.getCurrentAmount()) {
+            if (newAmount > book.getCurrentQuantity()) {
                 log.error("Requested quantity is greater than available quantity");
                 return new ResponseError<>(400, "Requested quantity is greater than available quantity");
             }
@@ -88,7 +88,7 @@ public class CartItemServiceImpl implements CartItemService {
 
             cartItemRepository.save(itemToUpdate);
 
-            book.setCurrentAmount(book.getCurrentAmount() - cartItemForm.getAmount());
+            book.setCurrentQuantity(book.getCurrentQuantity() - cartItemForm.getAmount());
             bookRepository.save(book);
 
             return new ResponseData<>(200, "Cart item updated successfully");
@@ -102,7 +102,7 @@ public class CartItemServiceImpl implements CartItemService {
 
             cartItemRepository.save(newItem);
 
-            book.setCurrentAmount(book.getCurrentAmount() - cartItemForm.getAmount());
+            book.setCurrentQuantity(book.getCurrentQuantity() - cartItemForm.getAmount());
             bookRepository.save(book);
 
             return new ResponseData<>(200, "Cart item added successfully");
@@ -149,8 +149,8 @@ public class CartItemServiceImpl implements CartItemService {
         }
 
         Book book = cartItem.getBook();
-        Long newCurrentAmount = book.getCurrentAmount() + cartItemForm.getAmount();
-        book.setCurrentAmount(newCurrentAmount);
+        Long newCurrentAmount = book.getCurrentQuantity() + cartItemForm.getAmount();
+        book.setCurrentQuantity(newCurrentAmount);
         bookRepository.save(book);
 
         return new ResponseData<>(200, "Cart item removed successfully");

@@ -23,7 +23,8 @@ public class BookDto {
     private String categoryName;
     private Double price;
     private String description;
-    private Long amount;
+    private Long quantity;
+    private Long currentQuantity;
     private String image;
     private LocalDate postingDate;
     private boolean isApproved;
@@ -41,7 +42,8 @@ public class BookDto {
                 .categoryName(book.getCategory() != null ? book.getCategory().getCategoryName() : null)
                 .price(book.getPrice())
                 .description(book.getDescription())
-                .amount(book.getAmount())
+                .quantity(book.getQuantity())
+                .currentQuantity(book.getCurrentQuantity())
                 .image(book.getImage())
                 .postingDate(book.getPostingDate())
                 .isApproved(book.isApproved())

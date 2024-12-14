@@ -19,11 +19,16 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-
     private String address;
     private String phone;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
 //    private Voucher voucher;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems;
 
     private LocalDate orderDate;
 
@@ -40,11 +45,8 @@ public class Order {
     }
 
     private String note;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems;
-
-    private double totalBookPrice; // Tổng giá sách
-    private double shippingFee; // Phí vận chuyển
+    private double totalBookPrice;
+    private double shippingFee;
     private double totalPrice;
 
 }

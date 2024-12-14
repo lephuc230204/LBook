@@ -46,8 +46,8 @@ public class Book {
 
     private Long currentQuantity;
 
-    @Column (nullable = false)
-    private Long currentAmount;
+//    @Column (nullable = false)
+//    private Long currentAmount;
 
     private String image;
 

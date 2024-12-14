@@ -5,8 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class OrderForm {
+
+    private List<Long> cartItemIds;
     @NotBlank(message = "Địa chỉ không được để trống")
     private String address;
 

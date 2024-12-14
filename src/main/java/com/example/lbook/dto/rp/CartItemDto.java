@@ -25,7 +25,7 @@ public class CartItemDto {
                 .bookId(cartItem.getBook().getBookId())
                 .bookName(cartItem.getBook().getBookName())
                 .price(cartItem.getBook().getPrice())
-                .amount(cartItem.getBook().getAmount())
+                .amount(cartItem.getBook().getQuantity())
                 .image(cartItem.getBook().getImage())
                 .build();
     }

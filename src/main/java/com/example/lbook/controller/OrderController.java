@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v2/orders")
+@RequestMapping("/api/v1/orders")
 public class OrderController {
     @Autowired
     private OrderService orderService;
 
     @PostMapping("")
-    public ResponseEntity<ResponseData<OrderDto>> createOrder(@RequestBody @Valid OrderForm form, @RequestBody List<CartItem> cartItems) {
-        return ResponseEntity.ok(orderService.createOrder(form, cartItems));
+    public ResponseEntity<ResponseData<OrderDto>> createOrder(@RequestBody @Valid OrderForm form) {
+        return ResponseEntity.ok(orderService.createOrder(form));
     }
 }
