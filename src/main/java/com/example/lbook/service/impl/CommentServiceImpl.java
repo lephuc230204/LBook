@@ -52,6 +52,7 @@ public class CommentServiceImpl implements CommentService {
                 .bookPost(bookPost)
                 .parentComment(parentComment)
                 .content(commentForm.getContent())
+                .likes(0L)
                 .createdDate(LocalDate.now())
                 .build();
 
@@ -131,10 +132,6 @@ public class CommentServiceImpl implements CommentService {
 
         // Tìm comment theo commentId
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("Comment not found"));
-
-        if (comment.getLikes() == null) {
-            comment.setLikes(0L);
-        }
 
         // Kiểm tra xem người dùng đã like comment này chưa
         if (comment.getLikedUsers().contains(user.getId())) {
