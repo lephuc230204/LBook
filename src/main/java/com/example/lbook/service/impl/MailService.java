@@ -1,4 +1,4 @@
-package com.example.lbook.service;
+package com.example.lbook.service.impl;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

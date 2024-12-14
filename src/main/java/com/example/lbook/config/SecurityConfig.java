@@ -38,7 +38,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/v1/auth/**",
                                 "/swagger-ui/**",    // Cho phép Swagger UI
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/ws/chat"
                         ).permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().authenticated()

@@ -50,7 +50,8 @@ public class BookServiceImpl implements BookService {
         newBook.setBookName(bookForm.getBookName());
         newBook.setPrice(bookForm.getPrice());
         newBook.setDescription(bookForm.getDescription());
-        newBook.setAmount(bookForm.getAmount());
+        newBook.setQuantity(bookForm.getAmount());
+        newBook.setCurrentQuantity(bookForm.getAmount());
         newBook.setPostingDate(LocalDate.now());
         newBook.setApproved(false);
         newBook.setUser(user);
@@ -127,7 +128,8 @@ public class BookServiceImpl implements BookService {
         book.setBookName(bookForm.getBookName());
         book.setPrice(bookForm.getPrice());
         book.setDescription(bookForm.getDescription());
-        book.setAmount(bookForm.getAmount());
+        book.setQuantity(bookForm.getAmount() + book.getQuantity());
+        book.setCurrentQuantity(book.getCurrentQuantity() + bookForm.getAmount());
 
         Category category = categoryService.checkOrCreateCategory(bookForm.getCategoryName());
         book.setCategory(category);
