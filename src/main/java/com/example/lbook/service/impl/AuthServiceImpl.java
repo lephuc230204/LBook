@@ -7,7 +7,9 @@ import com.example.lbook.dto.rq.SignInForm;
 import com.example.lbook.dto.rq.SignUpForm;
 import com.example.lbook.entity.Role;
 import com.example.lbook.entity.User;
+import com.example.lbook.entity.Cart;
 import com.example.lbook.middleware.JwtProvider;
+import com.example.lbook.repository.CartRepository;
 import com.example.lbook.repository.RoleRepository;
 import com.example.lbook.repository.UserRepository;
 import com.example.lbook.service.AuthService;
@@ -37,6 +39,7 @@ import java.util.Random;
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final CartRepository cartRepository;
     private final JwtProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
@@ -98,6 +101,13 @@ public class AuthServiceImpl implements AuthService {
 
         // Lưu người dùng vào cơ sở dữ liệu
         userRepository.save(user);
+
+        Cart cart = Cart.builder()
+                .user(user)
+                .createdDate(LocalDate.now())
+                .build();
+        cartRepository.save(cart);
+
         log.info("User {} registered", user.getEmail());
 
 //        String veryfyCode = UUID.randomUUID().toString();
