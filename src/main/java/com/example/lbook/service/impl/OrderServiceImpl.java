@@ -129,17 +129,20 @@ public class OrderServiceImpl implements OrderService {
             totalBookPrice += orderItem.getPrice();
         }
 
-        // Tìm quận và phường từ địa chỉ người dùng
-        String districtAndWard = getDistrictAndWard(form.getAddress()); // Lấy thông tin quận và phường từ địa chỉ người dùng
+        String provinceName = "Hà Nội";    // Tên tỉnh
+        String districtName = "Hoàn Kiếm"; // Tên quận
+        String wardName = "Hàng Bạc";      // Tên phường
 
-        // Tính phí vận chuyển từ quận 1 (quán) đến địa chỉ khách hàng
-        int toDistrictId = getDistrictIdFromString(districtAndWard); // Giả sử bạn có hàm này để lấy mã quận từ tên quận
-        String toWardCode = getWardCodeFromString(districtAndWard); // Giả sử bạn có hàm này để lấy mã phường
+        double weight = 1.0;
+        double length = 1.0;
+        double width = 1.0;
+        double height = 1.0;
+        int serviceId = 1;
 
         // Tính phí vận chuyển
-        double shippingFee = shippingService.calculateShippingFee(
-                FROM_DISTRICT_ID, FROM_WARD_CODE,
-                toDistrictId, toWardCode, 1.0, 1.0, 1.0, 1.0, 1);
+        double shippingFee = shippingService.calculateShippingFee(provinceName, districtName, wardName,
+                weight, length, width, height, serviceId);
+
 
         order.setTotalBookPrice(totalBookPrice);
         order.setShippingFee(shippingFee);
