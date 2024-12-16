@@ -19,8 +19,8 @@ import java.util.Map;
 public class ShipFeeServiceImpl implements ShipFeeService {
 
     private static final String GHN_API_URL = "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee";
-    private static final String GHN_API_TOKEN = "637170d5-942b-11ea-9821-0281a26fb5d4";
-    private static final String GHN_API_SHOP_ID = "885";
+    private static final String GHN_API_TOKEN = "228c2f0a-ba15-11ef-bfcf-9e83397c467a";
+    private static final String GHN_API_SHOP_ID = "5523473";
 
     @Override
     public int calculateShipFee(List<OrderItem> orderItems, Address address) {
@@ -53,7 +53,7 @@ public class ShipFeeServiceImpl implements ShipFeeService {
         Map<String, Object> payload = new HashMap<>();
         payload.put("from_district_id", 1454);
         payload.put("from_ward_code", "21211");
-        payload.put("service_id", 53320);
+        payload.put("service_type_id", 2);
         payload.put("to_district_id", address.getDistrictId());
         payload.put("to_ward_code", address.getWardId());
         payload.put("height", calculateTotalHeight(orderItems));
@@ -104,11 +104,11 @@ public class ShipFeeServiceImpl implements ShipFeeService {
                 .sum();
     }
 
-    private double checkMaxLength(List<OrderItem> orderItems) {
+    private int checkMaxLength(List<OrderItem> orderItems) {
         return orderItems.stream()
-                .mapToDouble(item -> item.getBook().getLength())
-                .max()
-                .orElse(10);
+                .mapToInt(item -> (int) Math.round(item.getBook().getLength()))  // Ép kiểu sang int sau khi làm tròn
+                .max()  // Lấy giá trị lớn nhất
+                .orElse(10);  // Nếu không có phần tử nào, trả về 10
     }
 
     private int totalPrice(List<OrderItem> orderItems) {

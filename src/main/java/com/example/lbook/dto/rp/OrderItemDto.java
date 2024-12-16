@@ -16,7 +16,7 @@ public class OrderItemDto {
 
     public static OrderItemDto fromEntity(OrderItem orderItem) {
         return OrderItemDto.builder()
-                .orderItemId(orderItem.getOderItemId())
+                .orderItemId(orderItem.getOrderItemId())
                 .orderId(orderItem.getOrder().getOrderId())
                 .bookName(orderItem.getBook().getBookName())  // Assuming 'name' is the book name field
                 .quantity(orderItem.getQuantity())
