@@ -87,7 +87,7 @@ public class AddressService {
         throw new RuntimeException("District not found: " + districtName);
     }
 
-    public Map<String, Object> getWardCodeIdByName(String provinceName, String districtName, String wardName) {
+    public String getWardCodeByName(String provinceName, String districtName, String wardName) {
         // Lấy DistrictID từ tên tỉnh và tên quận/huyện
         int districtId = getDistrictIdByName(provinceName, districtName);
 
@@ -106,23 +106,24 @@ public class AddressService {
 
         // Kiểm tra xem dữ liệu trả về có hợp lệ không
         if (response.getBody() != null) {
-
             List<Map<String, Object>> wards = (List<Map<String, Object>>) response.getBody().get("data");
             for (Map<String, Object> ward : wards) {
-
                 // So sánh tên phường/xã với tên đã nhập
                 if (wardName.equalsIgnoreCase((String) ward.get("WardName"))) {
-                    // Tìm thấy phường/xã, trả về DistrictID và WardCode
-                    Map<String, Object> result = new HashMap<>();
-                    result.put("districtId", districtId);  // Trả về DistrictID
-                    result.put("wardCode", ward.get("WardCode"));  // Trả về WardCode
-                    return result;
+                    // Tìm thấy phường/xã, trả về WardCode dưới dạng int
+                    String wardCodeString = (String) ward.get("WardCode");
+                    try {
+                        return wardCodeString; // Chuyển đổi từ String sang int
+                    } catch (NumberFormatException e) {
+                        throw new RuntimeException("Invalid WardCode format for: " + wardName);
+                    }
                 }
             }
         }
 
         throw new RuntimeException("Ward not found: " + wardName);
     }
+
 
 
     // Tạo HttpHeaders với Token

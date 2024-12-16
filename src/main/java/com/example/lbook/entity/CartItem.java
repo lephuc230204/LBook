@@ -23,6 +23,8 @@ public class CartItem {
 
     private Long amount;
 
+    private Long weight = 8L;
+
     private Double price;
 
     @ManyToOne

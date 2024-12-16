@@ -1,6 +1,7 @@
 package com.example.lbook.controller;
 
 import com.example.lbook.service.impl.AddressService;
+import com.example.lbook.service.impl.ShippingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ public class AddressController {
 
     @Autowired
     private AddressService addressService;  // Inject AddressService
+    @Autowired
+    private ShippingService shippingService;
 
     // Endpoint để lấy ProvinceID từ tên tỉnh
     @GetMapping("/province-id")
@@ -49,17 +52,17 @@ public class AddressController {
 
     // Endpoint để kiểm tra WardCode và DistrictID từ tên tỉnh, quận/huyện và phường/xã
     @GetMapping("/ward-code-id")
-    public ResponseEntity<Map<String, Object>> getWardCodeId(@RequestParam String provinceName,
-                                                             @RequestParam String districtName,
-                                                             @RequestParam String wardName) {
+    public ResponseEntity<?> getWardCodeId(@RequestParam String provinceName,
+                                           @RequestParam String districtName,
+                                           @RequestParam String wardName) {
         try {
-            // Gọi hàm getWardCodeIdByName để lấy districtId và wardCode
-            Map<String, Object> result = addressService.getWardCodeIdByName(provinceName, districtName, wardName);
+            // Gọi hàm getWardCodeByName để lấy districtId và wardCode
+            String result = addressService.getWardCodeByName(provinceName, districtName, wardName);
 
-            // Trả về kết quả
+            // Trả về kết quả nếu thành công
             return ResponseEntity.ok(result);
         } catch (RuntimeException e) {
-            // Trả về lỗi nếu không tìm thấy phường/xã
+            // Trả về lỗi với thông báo
             return ResponseEntity.status(404).body(Map.of("message", e.getMessage()));
         }
     }
@@ -96,4 +99,12 @@ public class AddressController {
                     .body(Collections.singletonList(Collections.singletonMap("error", e.getMessage())));
         }
     }
+
+//    @GetMapping("/calculateShip")
+//    public ResponseEntity<Long> calculateShip(@RequestParam String provinceName,
+//                                              @RequestParam String districtName,
+//                                              @RequestParam String wardName) {
+//        Long result = shippingService.calculateShip(provinceName, districtName, wardName);
+//        return ResponseEntity.ok(result);
+//    }
 }

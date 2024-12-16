@@ -14,12 +14,13 @@ import java.util.List;
 public class OrderDto {
     private Long orderId;
     private String address;
+    private String fullAddress;
     private String phone;
     private LocalDate orderDate;
     private Order.ShippingUnit shippingUnit;
+    private List<Long> orderItemId;
     private Order.PaymentMethod paymentMethod;
     private String note;
-    private List<OrderItem> orderItems;
     private double totalBookPrice; // Tổng giá sách
     private double shippingFee; // Phí vận chuyển
     private double totalPrice;
@@ -30,14 +31,16 @@ public class OrderDto {
                 .address(order.getAddress())
                 .phone(order.getPhone())
                 .orderDate(order.getOrderDate())
+                .fullAddress(order.getFullAddress())
+                .orderItemId(order.getOrderItems().stream()
+                        .map(OrderItem::getOderItemId)
+                        .toList())
                 .shippingUnit(order.getShippingUnit())
                 .paymentMethod(order.getPaymentMethod())
                 .note(order.getNote())
-                .orderItems(order.getOrderItems())
                 .totalBookPrice(order.getTotalBookPrice())
                 .shippingFee(order.getShippingFee())
                 .totalPrice(order.getTotalPrice())
-
                 .build();
     }
 }

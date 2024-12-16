@@ -24,4 +24,15 @@ public class OrderForm {
 
     @NotNull(message = "Phương thức thanh toán là bắt buộc")
     private Order.PaymentMethod paymentMethod;
+
+    @NotBlank(message = "tên tỉnh không được để trống")
+    private String province;
+
+    @NotBlank(message = "tên huyện không được để trống")
+    private String district;
+
+    @NotBlank(message = "tên xã không được để trống")
+    private String ward;
+
+    private int weight;
 }

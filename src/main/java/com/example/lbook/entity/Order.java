@@ -20,6 +20,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
     private String address;
+    private String fullAddress;
     private String phone;
 
     @ManyToOne

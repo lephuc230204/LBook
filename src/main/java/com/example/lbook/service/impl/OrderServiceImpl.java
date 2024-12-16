@@ -108,16 +108,24 @@ public class OrderServiceImpl implements OrderService {
             return new ResponseError<>(400, "Invalid cart items");
         }
 
+        Double totalBookPrice = cartItems.stream()
+                .mapToDouble(cartItem -> cartItem.getAmount() * cartItem.getPrice().doubleValue())
+                .sum();
         Order order = new Order();
         order.setUser(user);
         order.setAddress(form.getAddress());
+        order.setFullAddress(form.getProvince()+form.getDistrict()+form.getWard()+form.getAddress());
         order.setPhone(form.getPhone());
         order.setNote(form.getNote());
         order.setShippingUnit(form.getShippingUnit());
         order.setPaymentMethod(form.getPaymentMethod());
         order.setOrderDate(LocalDate.now());
+        order.setTotalBookPrice(totalBookPrice);
 
-        double totalBookPrice = 0;
+        Long ShipFee = shippingService.calculateShip(form);
+        order.setShippingFee(ShipFee);
+
+        order.setTotalPrice(totalBookPrice+ShipFee);
 
         order = orderRepository.save(order);
 
@@ -129,24 +137,6 @@ public class OrderServiceImpl implements OrderService {
             totalBookPrice += orderItem.getPrice();
         }
 
-        String provinceName = "Hà Nội";    // Tên tỉnh
-        String districtName = "Hoàn Kiếm"; // Tên quận
-        String wardName = "Hàng Bạc";      // Tên phường
-
-        double weight = 1.0;
-        double length = 1.0;
-        double width = 1.0;
-        double height = 1.0;
-        int serviceId = 1;
-
-        // Tính phí vận chuyển
-        double shippingFee = shippingService.calculateShippingFee(provinceName, districtName, wardName,
-                weight, length, width, height, serviceId);
-
-
-        order.setTotalBookPrice(totalBookPrice);
-        order.setShippingFee(shippingFee);
-        order.setTotalPrice(totalBookPrice + shippingFee);
 
         // Save the updated Order with OrderItems
         orderRepository.save(order);
