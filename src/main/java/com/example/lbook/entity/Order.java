@@ -19,34 +19,40 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-    private String address;
-    private String phone;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id", nullable = false) // Ánh xạ với khóa ngoại address_id
+    private Address address; // Địa chỉ giao hàng ProvineId, DistrictId, WardId
+
+    private PaymentMedthodEnum paymentMedthod;
+    public enum PaymentMedthodEnum {
+        MOMO,BANK
+    }
+
+    private String shippingUnit;
+
+    @Column(nullable = false)
+    private String phone; // Số điện thoại nhận hàng
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User user; // Người dùng đặt hàng
 
-//    private Voucher voucher;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems;
+    private List<OrderItem> orderItems; // Chi tiết các sản phẩm trong đơn hàng
 
-    private LocalDate orderDate;
+    @Column(nullable = false)
+    private LocalDate orderDate; // Ngày đặt hàng
 
-    @Enumerated(EnumType.STRING)
-    private ShippingUnit shippingUnit;
-    public enum ShippingUnit {
-        GHTK, GHN, VIETTEL_POST
-    }
+    @Column(nullable = false)
+    private String note; // Ghi chú của khách hàng
 
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
-    public enum PaymentMethod {
-        VNPAY, BANK, MOMO
-    }
+    @Column(nullable = false)
+    private double totalBookPrice; // Tổng giá trị sản phẩm (chưa tính phí vận chuyển)
 
-    private String note;
-    private double totalBookPrice;
-    private double shippingFee;
-    private double totalPrice;
+    @Column(nullable = false)
+    private double shippingFee; // Phí vận chuyển
 
+    @Column(nullable = false)
+    private double totalPrice; // Tổng giá trị đơn hàng (bao gồm phí vận chuyển)
 }

@@ -7,21 +7,24 @@ import lombok.Data;
 
 import java.util.List;
 
+
 @Data
 public class OrderForm {
+    @NotNull
+    private int provinceId;
+    @NotNull
+    private int districtId;
+    @NotBlank
+    private String wardId;
 
-    private List<Long> cartItemIds;
-    @NotBlank(message = "Địa chỉ không được để trống")
-    private String address;
-
-    @NotBlank(message = "Số điện thoại không được để trống")
+    private String numberHouse;
+    @NotBlank
+    private Order.PaymentMedthodEnum paymentMethod;
+    @NotNull
     private String phone;
 
+    private List<Long> cartItemIds;
+    private String shippingUnit;
     private String note;
-
-    @NotNull(message = "Đơn vị vận chuyển là bắt buộc")
-    private Order.ShippingUnit shippingUnit;
-
-    @NotNull(message = "Phương thức thanh toán là bắt buộc")
-    private Order.PaymentMethod paymentMethod;
 }
+

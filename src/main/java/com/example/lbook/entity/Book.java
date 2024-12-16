@@ -1,7 +1,6 @@
 package com.example.lbook.entity;
 
 import jakarta.persistence.*;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,50 +9,62 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
-@Table(name ="book")
+@Table(name = "book")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book {
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookId;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String bookName;
 
     @ManyToOne
-    @JoinColumn (name = "user_id",nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name ="author_id", nullable = false)
+    @JoinColumn(name = "author_id", nullable = false)
     private Author author;
 
     @ManyToOne
-    @JoinColumn(name = "category_ìd", nullable = false)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private Double price;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String description;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private Long quantity;
 
     private Long currentQuantity;
 
-//    @Column (nullable = false)
-//    private Long currentAmount;
-
     private String image;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private LocalDate postingDate;
 
-    @Column (nullable = false)
+    @Column(nullable = true)
     private boolean isApproved;
+
+    // Fields for shipping API
+    @Column(nullable = true)
+    private Double weight; // Trọng lượng của sách (gram)
+
+    @Column(nullable = true)
+    private Double length; // Chiều dài của sách (cm)
+
+    @Column(nullable = true)
+    private Double width; // Chiều rộng của sách (cm)
+
+    @Column(nullable = true)
+    private Double height; // Chiều cao của sách (cm)
+
+    private String cod; // Giá trị COD nếu sách cần thu hộ
 }
