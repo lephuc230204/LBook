@@ -1,5 +1,8 @@
 package com.example.lbook.controller;
 
+import com.example.lbook.dto.rp.AddressDto;
+import com.example.lbook.dto.rp.ResponseData;
+import com.example.lbook.dto.rq.AddressForm;
 import com.example.lbook.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,11 @@ public class AddressController {
 
     @Autowired
     private AddressService addressService;
+
+    @PostMapping("")
+    public ResponseEntity<ResponseData<AddressDto>> createAddress(@RequestBody AddressForm form) {
+        return ResponseEntity.ok(addressService.createAddress(form));
+    }
 
     // Endpoint lấy danh sách tỉnh/thành phố
     @GetMapping("/provinces")
