@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Data
 public class BookForm {
-
     private String bookName;
     private String authorName;
     private String categoryName;
@@ -15,5 +14,9 @@ public class BookForm {
     private String description;
     private Long amount;
     private MultipartFile image;
+    private int length;
+    private int weight;
+    private int width;
+    private int height;
 
 }

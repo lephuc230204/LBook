@@ -48,8 +48,8 @@ public class AddressServiceImpl implements AddressService {
         headers.set("token", ghnToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, request, Map.class);
 
         Map<String, Object> responseBody = response.getBody();
         List<Map<String, Object>> allProvinces = (List<Map<String, Object>>) responseBody.get("data");
@@ -75,9 +75,9 @@ public class AddressServiceImpl implements AddressService {
         headers.set("token", ghnToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Map<String, Integer> body = Map.of("province_id", provinceId);
-        HttpEntity<Map<String, Integer>> entity = new HttpEntity<>(body, headers);
-        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
+        Map<String, Integer> payload = Map.of("province_id", provinceId);
+        HttpEntity<Map<String, Integer>> request = new HttpEntity<>(payload, headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, request, Map.class);
 
         Map<String, Object> responseBody = response.getBody();
 
@@ -105,15 +105,13 @@ public class AddressServiceImpl implements AddressService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, Integer> body = Map.of("district_id", districtId);
-        HttpEntity<Map<String, Integer>> entity = new HttpEntity<>(body, headers);
-        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
+        HttpEntity<Map<String, Integer>> request = new HttpEntity<>(body, headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, request, Map.class);
 
         Map<String, Object> responseBody = response.getBody();
 
-        // Lấy danh sách các phường/xã từ phản hồi
         List<Map<String, Object>> wards = (List<Map<String, Object>>) responseBody.get("data");
 
-        // Tạo một danh sách mới chỉ chứa các trường cần thiết
         List<Map<String, Object>> filteredWards = new ArrayList<>();
         for (Map<String, Object> ward : wards) {
             Map<String, Object> filteredWard = new HashMap<>();

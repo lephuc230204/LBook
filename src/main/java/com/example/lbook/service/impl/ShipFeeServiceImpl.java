@@ -6,6 +6,7 @@ import com.example.lbook.service.ShipFeeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -19,12 +20,15 @@ import java.util.Map;
 public class ShipFeeServiceImpl implements ShipFeeService {
 
     private static final String GHN_API_URL = "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee";
-    private static final String GHN_API_TOKEN = "637170d5-942b-11ea-9821-0281a26fb5d4";
-    private static final String GHN_API_SHOP_ID = "885";
+
+    @Value("${ghn.token}")
+    private String GHN_API_TOKEN;
+
+    @Value("${ghn.shopId}")
+    private String GHN_API_SHOP_ID;
 
     @Override
     public int calculateShipFee(List<OrderItem> orderItems, Address address) {
-        // Build payload for GHN API
         String payload = buildGhnRequestPayload(orderItems, address);
 
         RestTemplate restTemplate = new RestTemplate();
@@ -35,25 +39,33 @@ public class ShipFeeServiceImpl implements ShipFeeService {
 
         HttpEntity<String> request = new HttpEntity<>(payload, headers);
 
-        try {
-            ResponseEntity<Map> response = restTemplate.exchange(GHN_API_URL, HttpMethod.POST, request, Map.class);
-            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-                Map<String, Object> data = (Map<String, Object>) response.getBody().get("data");
-                return (int) data.get("total");
-            }
-        } catch (Exception e) {
-            log.error("Error while calculating shipping fee: {}", e.getMessage());
-        }
+        ResponseEntity<Map> response = restTemplate.exchange(GHN_API_URL, HttpMethod.POST, request, Map.class);
 
-        // Default shipping fee in case of error
-        return 30000;
+        // Kiểm tra phản hồi từ API
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+            Map<String, Object> data = (Map<String, Object>) response.getBody().get("data");
+            return (int) data.get("total");
+        } else {
+            // Log error details if the response is not OK
+            if (response.getBody() != null) {
+                Map<String, Object> errorResponse = (Map<String, Object>) response.getBody();
+                String errorMessage = (String) errorResponse.get("message");
+                String errorCode = (String) errorResponse.get("code_message");
+
+                log.error("Error response from GHN API: Status Code: {} | Message: {} | Code Message: {}",
+                        response.getStatusCode(), errorMessage, errorCode);
+            } else {
+                log.error("Error response from GHN API: Status Code: {} | No response body", response.getStatusCode());
+            }
+
+            throw new RuntimeException("Error while calculating shipping fee.");
+        }
     }
+
 
     private String buildGhnRequestPayload(List<OrderItem> orderItems, Address address) {
         Map<String, Object> payload = new HashMap<>();
-        payload.put("from_district_id", 1454);
-        payload.put("from_ward_code", "21211");
-        payload.put("service_id", 53320);
+        payload.put( "service_type_id", 2);
         payload.put("to_district_id", address.getDistrictId());
         payload.put("to_ward_code", address.getWardId());
         payload.put("height", calculateTotalHeight(orderItems));
@@ -64,7 +76,8 @@ public class ShipFeeServiceImpl implements ShipFeeService {
         payload.put("cod_failed_amount", 2000);
         payload.put("coupon", null);
 
-        List<Map<String, Object>> items = orderItems.stream().map(item -> {
+        List<Map<String, Object>> items = orderItems.stream()
+                .map(item -> {
             Map<String, Object> bookItem = new HashMap<>();
             bookItem.put("name", item.getBook().getBookName());
             bookItem.put("quantity", item.getQuantity());
@@ -72,14 +85,16 @@ public class ShipFeeServiceImpl implements ShipFeeService {
             bookItem.put("weight", item.getBook().getWeight());
             bookItem.put("length", item.getBook().getLength());
             bookItem.put("width", item.getBook().getWidth());
-            return bookItem;
-        }).toList();
+            return bookItem; }
+                   ).toList();
 
         payload.put("items", items);
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.writeValueAsString(payload);
+            String jsonPayload = mapper.writeValueAsString(payload);
+            log.info("Generated GHN Request Payload: {}", jsonPayload);
+            return jsonPayload;
         } catch (JsonProcessingException e) {
             log.error("Error while building GHN payload: {}", e.getMessage());
             return "{}";
@@ -104,12 +119,13 @@ public class ShipFeeServiceImpl implements ShipFeeService {
                 .sum();
     }
 
-    private double checkMaxLength(List<OrderItem> orderItems) {
+    private int checkMaxLength(List<OrderItem> orderItems) {
         return orderItems.stream()
-                .mapToDouble(item -> item.getBook().getLength())
+                .mapToInt(item ->  item.getBook().getLength())
                 .max()
                 .orElse(10);
     }
+
 
     private int totalPrice(List<OrderItem> orderItems) {
         return orderItems.stream()

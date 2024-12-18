@@ -55,6 +55,10 @@ public class BookServiceImpl implements BookService {
         newBook.setPostingDate(LocalDate.now());
         newBook.setApproved(false);
         newBook.setUser(user);
+        newBook.setHeight(bookForm.getHeight());
+        newBook.setWeight(bookForm.getWeight());
+        newBook.setLength(bookForm.getLength());
+        newBook.setWidth(bookForm.getWidth());
 
         // Check or create Category
         Category category = categoryService.checkOrCreateCategory(bookForm.getCategoryName());

@@ -104,6 +104,7 @@ public class OrderServiceimpl implements OrderService {
         order.setTotalBookPrice(totalBookPrice);
         order.setShippingFee(shippingFee);
         order.setTotalPrice(totalBookPrice + shippingFee);
+        order.setOrderItems(orderItems);
 
         // Lưu Order trước
         orderRepository.save(order);
