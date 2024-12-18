@@ -1,13 +1,22 @@
 package com.example.lbook.service.impl;
 
+import com.example.lbook.dto.rp.AddressDto;
+import com.example.lbook.dto.rp.ResponseData;
+import com.example.lbook.dto.rp.ResponseError;
+import com.example.lbook.dto.rq.AddressForm;
 import com.example.lbook.dto.rq.OrderForm;
 import com.example.lbook.entity.Address;
 import com.example.lbook.entity.Order;
+import com.example.lbook.entity.User;
 import com.example.lbook.repository.AddressRepository;
+import com.example.lbook.repository.UserRepository;
 import com.example.lbook.service.AddressService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class AddressServiceImpl implements AddressService {
 
@@ -26,18 +36,28 @@ public class AddressServiceImpl implements AddressService {
     private RestTemplate restTemplate;
     @Autowired
     private AddressRepository addressRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
-    public Address createAddress(OrderForm form, Order order ) {
+    public ResponseData<AddressDto> createAddress(AddressForm form) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            log.error("User not found");
+            return new ResponseError<>(400, "User not found");
+        }
+
         Address address = Address.builder()
+                .user(user)
                 .provinceId(form.getProvinceId())
                 .districtId(form.getDistrictId())
                 .wardId(form.getWardId())
-                .numberHouse(form.getNumberHouse())
-                .orders(List.of(order))
+                .fullAddress(form.getFullAddress())
                 .build();
         addressRepository.save(address);
-        return address;
+        return new ResponseData<>(200,"success", AddressDto.fromEntity(address));
     }
 
     // Lấy danh sách tỉnh/thành phố
@@ -48,8 +68,8 @@ public class AddressServiceImpl implements AddressService {
         headers.set("token", ghnToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, request, Map.class);
 
         Map<String, Object> responseBody = response.getBody();
         List<Map<String, Object>> allProvinces = (List<Map<String, Object>>) responseBody.get("data");
@@ -75,9 +95,9 @@ public class AddressServiceImpl implements AddressService {
         headers.set("token", ghnToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Map<String, Integer> body = Map.of("province_id", provinceId);
-        HttpEntity<Map<String, Integer>> entity = new HttpEntity<>(body, headers);
-        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
+        Map<String, Integer> payload = Map.of("province_id", provinceId);
+        HttpEntity<Map<String, Integer>> request = new HttpEntity<>(payload, headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, request, Map.class);
 
         Map<String, Object> responseBody = response.getBody();
 
@@ -105,15 +125,13 @@ public class AddressServiceImpl implements AddressService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, Integer> body = Map.of("district_id", districtId);
-        HttpEntity<Map<String, Integer>> entity = new HttpEntity<>(body, headers);
-        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
+        HttpEntity<Map<String, Integer>> request = new HttpEntity<>(body, headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, request, Map.class);
 
         Map<String, Object> responseBody = response.getBody();
 
-        // Lấy danh sách các phường/xã từ phản hồi
         List<Map<String, Object>> wards = (List<Map<String, Object>>) responseBody.get("data");
 
-        // Tạo một danh sách mới chỉ chứa các trường cần thiết
         List<Map<String, Object>> filteredWards = new ArrayList<>();
         for (Map<String, Object> ward : wards) {
             Map<String, Object> filteredWard = new HashMap<>();

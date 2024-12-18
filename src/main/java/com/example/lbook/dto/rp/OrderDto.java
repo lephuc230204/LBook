@@ -17,13 +17,13 @@ public class OrderDto {
     private int provinceId;
     private int districtId;
     private String wardId;
-    private String numberHouse;
+    private String fullAddress;
     private String phone;
     private LocalDate orderDate;
     private String shippingUnit;
     private Order.PaymentMedthodEnum paymentMethod;
     private String note;
-    private List<OrderItem> orderItems;  // Thay List<OrderItem> bằng List<Map<String, Object>>
+    private List<OrderItemDto> orderItems;
     private double totalBookPrice;
     private double shippingFee;
     private double totalPrice;
@@ -34,16 +34,19 @@ public class OrderDto {
                 .provinceId(order.getAddress().getProvinceId())
                 .districtId(order.getAddress().getDistrictId())
                 .wardId(order.getAddress().getWardId())
-                .numberHouse(order.getAddress().getNumberHouse())
+                .fullAddress(order.getAddress().getFullAddress())
                 .phone(order.getPhone())
                 .orderDate(order.getOrderDate())
                 .shippingUnit(order.getShippingUnit())
                 .paymentMethod(order.getPaymentMedthod())
                 .note(order.getNote())
-                .orderItems(order.getOrderItems())  // Gán danh sách Map vào orderItems
+                .orderItems(order.getOrderItems().stream()
+                        .map(OrderItemDto::fromEntity)
+                        .collect(Collectors.toList()))
                 .totalBookPrice(order.getTotalBookPrice())
                 .shippingFee(order.getShippingFee())
                 .totalPrice(order.getTotalPrice())
+
                 .build();
     }
 }

@@ -34,6 +34,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Address> addresses;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "Role_ID", nullable = false)
     private Role role;

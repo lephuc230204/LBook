@@ -36,7 +36,6 @@ public class OrderServiceimpl implements OrderService {
 
     @Override
     public ResponseData<OrderDto> createOrder(OrderForm form, List<Long> cartItemIds) {
-        // Lấy user đang đăng nhập
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElse(null);
@@ -45,20 +44,17 @@ public class OrderServiceimpl implements OrderService {
             return new ResponseError<>(400, "User not found");
         }
 
-        // Kiểm tra cartItemIds
         if (cartItemIds == null || cartItemIds.isEmpty()) {
             log.error("Cart items are empty");
             return new ResponseError<>(400, "Cart items cannot be empty");
         }
 
-        // Lấy danh sách CartItems từ cartItemIds
         List<CartItem> cartItems = cartItemRepository.findAllByCartItemIdIn(cartItemIds);
         if (cartItems.isEmpty()) {
             log.error("No valid CartItems found");
             return new ResponseError<>(400, "No valid CartItems found");
         }
 
-        // Tạo Order
         Order order = new Order();
         order.setUser(user);
         order.setOrderDate(LocalDate.now());
@@ -67,35 +63,29 @@ public class OrderServiceimpl implements OrderService {
         order.setShippingUnit(form.getShippingUnit());
         order.setNote(form.getNote());
 
-        // Tạo hoặc tìm Address
-        Address address = addressRepository.findByDistrictIdAndProvinceIdAndWardIdAndNumberHouse(
-                form.getDistrictId(), form.getProvinceId(), form.getWardId(), form.getNumberHouse()).orElse(null);
+        Address address = addressRepository.findByDistrictIdAndProvinceIdAndWardIdAndFullAddress(
+                form.getDistrictId(), form.getProvinceId(), form.getWardId(), form.getFullAddress()).orElse(null);
 
         if (address == null) {
             address = new Address();
+            address.setUser(user);
             address.setDistrictId(form.getDistrictId());
             address.setProvinceId(form.getProvinceId());
             address.setWardId(form.getWardId());
-            address.setNumberHouse(form.getNumberHouse());
+            address.setFullAddress(form.getFullAddress());
             addressRepository.save(address);
         }
-
-        // Liên kết địa chỉ với đơn hàng
         order.setAddress(address);
-
-        // Tính toán tổng giá trị đơn hàng
         double totalBookPrice = cartItems.stream()
                 .mapToDouble(item -> item.getPrice() * item.getAmount())
                 .sum();
 
-
-        // Chuyển đổi CartItem thành OrderItem và liên kết với Order
         List<OrderItem> orderItems = cartItems.stream().map(cartItem -> {
             OrderItem orderItem = new OrderItem();
             orderItem.setBook(cartItem.getBook());
             orderItem.setQuantity(cartItem.getAmount());
             orderItem.setPrice(cartItem.getBook().getPrice());
-            orderItem.setOrder(order); // Set the order reference here
+            orderItem.setOrder(order);
             return orderItem;
         }).toList();
 
@@ -104,14 +94,9 @@ public class OrderServiceimpl implements OrderService {
         order.setTotalBookPrice(totalBookPrice);
         order.setShippingFee(shippingFee);
         order.setTotalPrice(totalBookPrice + shippingFee);
-
-        // Lưu Order trước
+        order.setOrderItems(orderItems);
         orderRepository.save(order);
-
-
-        // Lưu các OrderItem
         orderItemRepository.saveAll(orderItems);
-
         return new ResponseData<>(200, "Success", OrderDto.fromEntity(order));
     }
 

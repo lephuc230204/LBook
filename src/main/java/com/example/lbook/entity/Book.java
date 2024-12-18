@@ -55,16 +55,16 @@ public class Book {
 
     // Fields for shipping API
     @Column(nullable = true)
-    private Integer weight; // Trọng lượng của sách (gram)
+    private int weight;
 
     @Column(nullable = true)
-    private Integer length; // Chiều dài của sách (cm)
+    private int length;
 
     @Column(nullable = true)
-    private Integer width; // Chiều rộng của sách (cm)
+    private int width;
 
     @Column(nullable = true)
-    private Integer height; // Chiều cao của sách (cm)
+    private int height;
 
-    private Integer cod; // Giá trị COD nếu sách cần thu hộ
+    private String cod;
 }
