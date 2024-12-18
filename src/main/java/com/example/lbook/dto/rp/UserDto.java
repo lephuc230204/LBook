@@ -1,5 +1,6 @@
 package com.example.lbook.dto.rp;
 
+import com.example.lbook.entity.Address;
 import com.example.lbook.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,6 +21,7 @@ public class UserDto {
     private String email;
     private String phone;
     private String roleName;
+    private List<AddressDto> fullAddress;
     private LocalDate createdDate;
     private LocalDate dob;
     private String status;
@@ -27,6 +31,11 @@ public class UserDto {
                 .id(user.getId())
                 .email(user.getEmail())
                 .username(user.getUsername())
+                .fullAddress(user.getAddresses().stream()
+                        .map(AddressDto::fromEntity)
+                        .collect(Collectors.toList())
+
+                )
                 .phone(user.getPhone())
                 .roleName(user.getRole() != null ? user.getRole().getName() : null)
                 .createdDate(user.getCreatedDate())

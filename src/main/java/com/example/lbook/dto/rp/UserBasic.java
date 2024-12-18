@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Builder
 @Data
@@ -16,6 +18,7 @@ public class UserBasic {
     private String username;
     private String email;
     private String phone;
+    private List<String> fullAddress;
     private LocalDate createdDate;
     private LocalDate dob;
 
@@ -24,6 +27,11 @@ public class UserBasic {
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .phone(user.getPhone())
+                .fullAddress(user.getAddresses().stream()
+                        .map(address -> address.getFullAddress())
+                        .collect(Collectors.toList())
+
+                )
                 .createdDate(user.getCreatedDate())
                 .dob(user.getDob())
                 .build();
