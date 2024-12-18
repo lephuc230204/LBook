@@ -54,6 +54,11 @@ public class OrderServiceimpl implements OrderService {
             log.error("No valid CartItems found");
             return new ResponseError<>(400, "No valid CartItems found");
         }
+        Address address = addressRepository.findById(form.getAddressId()).orElse(null);
+        if (address == null) {
+            log.error("Address not found");
+            return new ResponseError<>(400, "Address not found");
+        }
 
         Order order = new Order();
         order.setUser(user);
@@ -63,18 +68,18 @@ public class OrderServiceimpl implements OrderService {
         order.setShippingUnit(form.getShippingUnit());
         order.setNote(form.getNote());
 
-        Address address = addressRepository.findByDistrictIdAndProvinceIdAndWardIdAndFullAddress(
-                form.getDistrictId(), form.getProvinceId(), form.getWardId(), form.getFullAddress()).orElse(null);
-
-        if (address == null) {
-            address = new Address();
-            address.setUser(user);
-            address.setDistrictId(form.getDistrictId());
-            address.setProvinceId(form.getProvinceId());
-            address.setWardId(form.getWardId());
-            address.setFullAddress(form.getFullAddress());
-            addressRepository.save(address);
-        }
+//        Address address = addressRepository.findByDistrictIdAndProvinceIdAndWardIdAndFullAddress(
+//                form.getDistrictId(), form.getProvinceId(), form.getWardId(), form.getFullAddress()).orElse(null);
+//
+//        if (address == null) {
+//            address = new Address();
+//            address.setUser(user);
+//            address.setDistrictId(form.getDistrictId());
+//            address.setProvinceId(form.getProvinceId());
+//            address.setWardId(form.getWardId());
+//            address.setFullAddress(form.getFullAddress());
+//            addressRepository.save(address);
+//        }
         order.setAddress(address);
         double totalBookPrice = cartItems.stream()
                 .mapToDouble(item -> item.getPrice() * item.getAmount())

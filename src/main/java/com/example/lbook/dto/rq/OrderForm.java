@@ -8,10 +8,7 @@ import java.util.List;
 
 @Data
 public class OrderForm {
-    private int provinceId;
-    private int districtId;
-    private String wardId;
-    private String fullAddress;
+    private Long addressId;
     private Order.PaymentMedthodEnum paymentMethod;
     private String phone;
     private List<Long> cartItemIds;
