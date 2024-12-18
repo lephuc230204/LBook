@@ -17,7 +17,7 @@ public class OrderDto {
     private int provinceId;
     private int districtId;
     private String wardId;
-    private String numberHouse;
+    private String fullAddress;
     private String phone;
     private LocalDate orderDate;
     private String shippingUnit;
@@ -34,7 +34,7 @@ public class OrderDto {
                 .provinceId(order.getAddress().getProvinceId())
                 .districtId(order.getAddress().getDistrictId())
                 .wardId(order.getAddress().getWardId())
-                .numberHouse(order.getAddress().getNumberHouse())
+                .fullAddress(order.getAddress().getFullAddress())
                 .phone(order.getPhone())
                 .orderDate(order.getOrderDate())
                 .shippingUnit(order.getShippingUnit())

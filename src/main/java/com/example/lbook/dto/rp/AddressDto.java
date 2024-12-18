@@ -15,15 +15,15 @@ public class AddressDto {
 
     private String wardId;
 
-    private String numberHouse;
+    private String fullAddress;
 
     public static AddressDto fromEntity(Address address) {
         return AddressDto.builder()
                 .addressId(address.getAddressId())
                 .provinceId(address.getProvinceId())
                 .districtId(address.getDistrictId())
-                .wardId(address.getWardId()) // Lấy phường/xã
-                .numberHouse(address.getNumberHouse()) // Lấy số nhà
+                .wardId(address.getWardId())
+                .fullAddress(address.getFullAddress())
                 .build();
     }
 }

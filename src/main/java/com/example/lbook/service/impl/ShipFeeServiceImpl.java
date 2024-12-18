@@ -41,12 +41,10 @@ public class ShipFeeServiceImpl implements ShipFeeService {
 
         ResponseEntity<Map> response = restTemplate.exchange(GHN_API_URL, HttpMethod.POST, request, Map.class);
 
-        // Kiểm tra phản hồi từ API
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
             Map<String, Object> data = (Map<String, Object>) response.getBody().get("data");
             return (int) data.get("total");
         } else {
-            // Log error details if the response is not OK
             if (response.getBody() != null) {
                 Map<String, Object> errorResponse = (Map<String, Object>) response.getBody();
                 String errorMessage = (String) errorResponse.get("message");
@@ -57,7 +55,6 @@ public class ShipFeeServiceImpl implements ShipFeeService {
             } else {
                 log.error("Error response from GHN API: Status Code: {} | No response body", response.getStatusCode());
             }
-
             throw new RuntimeException("Error while calculating shipping fee.");
         }
     }

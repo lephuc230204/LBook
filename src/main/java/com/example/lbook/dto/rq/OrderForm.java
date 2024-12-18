@@ -11,7 +11,7 @@ public class OrderForm {
     private int provinceId;
     private int districtId;
     private String wardId;
-    private String numberHouse;
+    private String fullAddress;
     private Order.PaymentMedthodEnum paymentMethod;
     private String phone;
     private List<Long> cartItemIds;

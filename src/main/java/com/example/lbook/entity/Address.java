@@ -22,6 +22,10 @@ public class Address {
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(nullable = false)
     private int provinceId;
 
@@ -32,6 +36,6 @@ public class Address {
     private String wardId;
 
     @Column(nullable = false)
-    private String numberHouse;
+    private String fullAddress;
 
 }
