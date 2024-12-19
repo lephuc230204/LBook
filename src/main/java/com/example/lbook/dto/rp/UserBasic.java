@@ -28,7 +28,7 @@ public class UserBasic {
                 .username(user.getUsername())
                 .phone(user.getPhone())
                 .fullAddress(user.getAddresses().stream()
-                        .map(address -> address.getFullAddress())
+                        .map(address -> "AddressID: " +address.getAddressId() + ", full Address: " + address.getFullAddress())
                         .collect(Collectors.toList())
 
                 )
