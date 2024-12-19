@@ -20,7 +20,6 @@ public class OrderController {
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@RequestBody OrderForm form) {
         try {
-            // Gọi service để xử lý tạo order
             ResponseData<?> response = orderService.createOrder(form, form.getCartItemIds());
             return ResponseEntity.status(response.getStatus()).body(response);
         } catch (Exception e) {
