@@ -12,7 +12,7 @@ public class BookForm {
     private String categoryName;
     private Double price;
     private String description;
-    private Long amount;
+    private int amount;
     private MultipartFile image;
     private int length;
     private int weight;

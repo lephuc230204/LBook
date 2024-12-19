@@ -14,4 +14,6 @@ public interface CartItemService {
     ResponseData<String> deleteCartItem(Long cartItemId);
 
     ResponseData<Page<CartItemDto>> getCartItems(int page, int size);
+
+    ResponseData<String> deleteAllCartItems();
 }

@@ -14,7 +14,7 @@ public class OrderItemDto {
     private int weight;
     private int length;
     private int width;
-    private Long quantity;
+    private int quantity;
     private double price;
 
     public static OrderItemDto fromEntity(OrderItem orderItem) {

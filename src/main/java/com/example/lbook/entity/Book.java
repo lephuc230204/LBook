@@ -41,9 +41,9 @@ public class Book {
     private String description;
 
     @Column(nullable = false)
-    private Long quantity;
+    private int quantity;
 
-    private Long currentQuantity;
+    private int currentQuantity;
 
     private String image;
 

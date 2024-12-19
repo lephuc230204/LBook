@@ -7,6 +7,7 @@ import com.example.lbook.dto.rp.ResponseError;
 import com.example.lbook.dto.rq.OrderForm;
 import com.example.lbook.entity.*;
 import com.example.lbook.repository.*;
+import com.example.lbook.service.OrderItemService;
 import com.example.lbook.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class OrderServiceimpl implements OrderService {
     private ShipFeeServiceImpl shipFeeServiceImpl;
     @Autowired
     private OrderItemRepository orderItemRepository;
+    @Autowired
+    private OrderItemService orderItemService;
 
     @Override
     public ResponseData<OrderDto> createOrder(OrderForm form, List<Long> cartItemIds) {
@@ -67,32 +70,12 @@ public class OrderServiceimpl implements OrderService {
         order.setPaymentMedthod(form.getPaymentMethod());
         order.setShippingUnit(form.getShippingUnit());
         order.setNote(form.getNote());
-
-//        Address address = addressRepository.findByDistrictIdAndProvinceIdAndWardIdAndFullAddress(
-//                form.getDistrictId(), form.getProvinceId(), form.getWardId(), form.getFullAddress()).orElse(null);
-//
-//        if (address == null) {
-//            address = new Address();
-//            address.setUser(user);
-//            address.setDistrictId(form.getDistrictId());
-//            address.setProvinceId(form.getProvinceId());
-//            address.setWardId(form.getWardId());
-//            address.setFullAddress(form.getFullAddress());
-//            addressRepository.save(address);
-//        }
         order.setAddress(address);
         double totalBookPrice = cartItems.stream()
                 .mapToDouble(item -> item.getPrice() * item.getAmount())
                 .sum();
 
-        List<OrderItem> orderItems = cartItems.stream().map(cartItem -> {
-            OrderItem orderItem = new OrderItem();
-            orderItem.setBook(cartItem.getBook());
-            orderItem.setQuantity(cartItem.getAmount());
-            orderItem.setPrice(cartItem.getBook().getPrice());
-            orderItem.setOrder(order);
-            return orderItem;
-        }).toList();
+        List<OrderItem> orderItems = orderItemService.createOrderItems(cartItems, order);
 
         double shippingFee = shipFeeServiceImpl.calculateShipFee(orderItems, address);
 
@@ -101,7 +84,7 @@ public class OrderServiceimpl implements OrderService {
         order.setTotalPrice(totalBookPrice + shippingFee);
         order.setOrderItems(orderItems);
         orderRepository.save(order);
-        orderItemRepository.saveAll(orderItems);
+
         return new ResponseData<>(200, "Success", OrderDto.fromEntity(order));
     }
 

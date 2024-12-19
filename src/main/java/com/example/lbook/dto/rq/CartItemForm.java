@@ -8,5 +8,5 @@ import lombok.Data;
 public class CartItemForm {
     @NotNull(message = "Quantity must not be null")
     @Min(value = 1, message = "Quantity must be greater than 0")
-    private Long amount;
+    private int amount;
 }

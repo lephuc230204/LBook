@@ -26,7 +26,7 @@ public class OrderItem {
     private Book book;
 
     @Column(nullable = false)
-    private Long quantity;
+    private int quantity;
 
     @Column(nullable = false)
     private double price;

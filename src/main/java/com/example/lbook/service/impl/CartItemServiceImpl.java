@@ -64,11 +64,6 @@ public class CartItemServiceImpl implements CartItemService {
             return new ResponseError<>(400, "Book is approved and cannot be added to the cart");
         }
 
-        if (cartItemForm.getAmount() > book.getCurrentQuantity()) {
-            log.error("Requested quantity is greater than available quantity");
-            return new ResponseError<>(400, "Requested quantity is greater than available quantity");
-        }
-
         Optional<CartItem> existingItem = cart.getItems().stream()
                 .filter(item -> item.getBook().getBookId().equals(book.getBookId()))
                 .findFirst();
@@ -76,20 +71,12 @@ public class CartItemServiceImpl implements CartItemService {
         if (existingItem.isPresent()) {
             CartItem itemToUpdate = existingItem.get();
 
-            Long newAmount = itemToUpdate.getAmount() + cartItemForm.getAmount();
-
-            if (newAmount > book.getCurrentQuantity()) {
-                log.error("Requested quantity is greater than available quantity");
-                return new ResponseError<>(400, "Requested quantity is greater than available quantity");
-            }
+            int newAmount = itemToUpdate.getAmount() + cartItemForm.getAmount();
 
             itemToUpdate.setAmount(newAmount);
             itemToUpdate.setPrice(book.getPrice() * newAmount);
 
             cartItemRepository.save(itemToUpdate);
-
-            book.setCurrentQuantity(book.getCurrentQuantity() - cartItemForm.getAmount());
-            bookRepository.save(book);
 
             return new ResponseData<>(200, "Cart item updated successfully");
         } else {
@@ -101,9 +88,6 @@ public class CartItemServiceImpl implements CartItemService {
                     .build();
 
             cartItemRepository.save(newItem);
-
-            book.setCurrentQuantity(book.getCurrentQuantity() - cartItemForm.getAmount());
-            bookRepository.save(book);
 
             return new ResponseData<>(200, "Cart item added successfully");
         }
@@ -139,7 +123,7 @@ public class CartItemServiceImpl implements CartItemService {
             return new ResponseError<>(400, "Cannot remove more items than are in the cart");
         }
 
-        Long newAmount = cartItem.getAmount() - cartItemForm.getAmount();
+        int newAmount = cartItem.getAmount() - cartItemForm.getAmount();
         if (newAmount > 0) {
             cartItem.setAmount(newAmount);
             cartItem.setPrice(cartItem.getBook().getPrice() * newAmount);
@@ -149,7 +133,7 @@ public class CartItemServiceImpl implements CartItemService {
         }
 
         Book book = cartItem.getBook();
-        Long newCurrentAmount = book.getCurrentQuantity() + cartItemForm.getAmount();
+        int newCurrentAmount = book.getCurrentQuantity() + cartItemForm.getAmount();
         book.setCurrentQuantity(newCurrentAmount);
         bookRepository.save(book);
 
@@ -215,6 +199,26 @@ public class CartItemServiceImpl implements CartItemService {
         Page<CartItemDto> cartItemDtos = cartItems.map(CartItemDto::toDto);
 
         return new ResponseData<>(200, "Cart items retrieved successfully", cartItemDtos);
+    }
+
+    @Override
+    public ResponseData<String> deleteAllCartItems() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            log.error("User not found for email {}", email);
+            return new ResponseError<>(404, "User not found");
+        }
+        Cart cart = cartRepository.findByUser_UserId(user.getUserId());
+
+        if(cart.getItems().isEmpty()){
+            log.info("Cart items is empty");
+            return new ResponseError<>(400, "Cart items is empty");
+        }
+        cartItemRepository.deleteAll(cart.getItems());
+        log.info("All cart items deleted for user with email {}", email);
+        return new ResponseData<>(200, "Cart items deleted successfully");
     }
 
 }

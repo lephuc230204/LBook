@@ -23,8 +23,8 @@ public class BookDto {
     private String categoryName;
     private Double price;
     private String description;
-    private Long quantity;
-    private Long currentQuantity;
+    private int quantity;
+    private int currentQuantity;
     private String image;
     private LocalDate postingDate;
     private boolean isApproved;
