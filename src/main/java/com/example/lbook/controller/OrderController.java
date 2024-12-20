@@ -3,6 +3,7 @@ package com.example.lbook.controller;
 import com.example.lbook.dto.rp.ResponseData;
 import com.example.lbook.dto.rq.OrderForm;
 import com.example.lbook.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createOrder(@RequestBody OrderForm form) {
+    public ResponseEntity<?> createOrder(@Valid @RequestBody OrderForm form) {
         try {
             ResponseData<?> response = orderService.createOrder(form, form.getCartItemIds());
             return ResponseEntity.status(response.getStatus()).body(response);
@@ -27,5 +28,8 @@ public class OrderController {
             return ResponseEntity.status(500).body("Internal Server Error");
         }
     }
-
+    @PutMapping("/{orderId}")
+    public ResponseEntity<ResponseData<String>> updateOrder(@PathVariable Long orderId,@RequestBody OrderForm form) {
+        return ResponseEntity.ok(orderService.updateOrder(orderId, form));
+    }
 }

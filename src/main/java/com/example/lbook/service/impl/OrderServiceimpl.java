@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -98,12 +99,32 @@ public class OrderServiceimpl implements OrderService {
 
         order.setTotalBookPrice(totalBookPrice);
         order.setShippingFee(shippingFee);
-         order.setOrderItems(orderItems);
+        order.setOrderItems(orderItems);
+        order.setStatus(Order.Status.PENDING);
         orderRepository.save(order);
 
         return new ResponseData<>(200, "Success", OrderDto.fromEntity(order));
     }
 
+    @Override
+    public ResponseData<String> updateOrder(Long orderId, OrderForm form) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            log.error("User not found");
+            return new ResponseError<>(400, "User not found");
+        }
+
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order == null) {
+            log.error("Order not found");
+            return new ResponseError<>(400, "Order not found");
+        }
+        order.setStatus(form.getStatus());
+        orderRepository.save(order);
+        return new ResponseData<>(200, "Success");
+    }
 
 
 }

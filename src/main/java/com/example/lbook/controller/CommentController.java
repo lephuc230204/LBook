@@ -3,6 +3,7 @@ package com.example.lbook.controller;
 import com.example.lbook.dto.rp.CommentDto;
 import com.example.lbook.dto.rq.CommentForm;
 import com.example.lbook.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<CommentDto> createComment(@RequestBody CommentForm commentForm) {
+    public ResponseEntity<CommentDto> createComment(@Valid @RequestBody CommentForm commentForm) {
         return ResponseEntity.ok(commentService.createComment(commentForm));
     }
     @GetMapping

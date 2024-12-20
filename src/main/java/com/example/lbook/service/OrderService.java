@@ -10,4 +10,5 @@ import java.util.List;
 public interface OrderService {
     public ResponseData<OrderDto> createOrder(OrderForm form, List<Long> cartItemIds);
 
+    ResponseData<String> updateOrder(Long orderId, OrderForm form);
 }

@@ -1,7 +1,10 @@
 package com.example.lbook.repository;
 
 import com.example.lbook.entity.Order;
+import com.example.lbook.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 }

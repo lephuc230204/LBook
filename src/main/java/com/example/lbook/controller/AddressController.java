@@ -4,6 +4,7 @@ import com.example.lbook.dto.rp.AddressDto;
 import com.example.lbook.dto.rp.ResponseData;
 import com.example.lbook.dto.rq.AddressForm;
 import com.example.lbook.service.AddressService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class AddressController {
     private AddressService addressService;
 
     @PostMapping("")
-    public ResponseEntity<ResponseData<AddressDto>> createAddress(@RequestBody AddressForm form) {
+    public ResponseEntity<ResponseData<AddressDto>> createAddress(@Valid @RequestBody AddressForm form) {
         return ResponseEntity.ok(addressService.createAddress(form));
     }
 

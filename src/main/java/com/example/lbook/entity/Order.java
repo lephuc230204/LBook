@@ -55,4 +55,11 @@ public class Order {
 
     @Column(nullable = false)
     private double totalPrice; // Tổng giá trị đơn hàng (bao gồm phí vận chuyển)
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    public enum Status {
+        PENDING, APPROVED, REJECTED
+    }
 }
