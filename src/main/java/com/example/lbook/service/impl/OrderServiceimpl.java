@@ -31,6 +31,8 @@ public class OrderServiceimpl implements OrderService {
     @Autowired
     private AddressRepository addressRepository;
     @Autowired
+    private VoucherRepository voucherRepository;
+    @Autowired
     private ShipFeeServiceImpl shipFeeServiceImpl;
     @Autowired
     private OrderItemRepository orderItemRepository;
@@ -79,10 +81,24 @@ public class OrderServiceimpl implements OrderService {
 
         double shippingFee = shipFeeServiceImpl.calculateShipFee(orderItems, address);
 
+        if (form.getVoucher() != null) {
+            Voucher voucher = voucherRepository.findByCode(form.getVoucher());
+            if (voucher == null) {
+                log.error("Voucher not found");
+                return new ResponseError<>(400, "Voucher is not valid");
+            }
+            if (voucher.getValidDate() == null || voucher.getValidDate().isBefore(LocalDate.now())) {
+                log.error("Voucher has expired or invalid valid date");
+                return new ResponseError<>(400, "Voucher has expired");
+            }
+            order.setTotalPrice(totalBookPrice + shippingFee - voucher.getPrice());
+        } else {
+            order.setTotalPrice(totalBookPrice + shippingFee);
+        }
+
         order.setTotalBookPrice(totalBookPrice);
         order.setShippingFee(shippingFee);
-        order.setTotalPrice(totalBookPrice + shippingFee);
-        order.setOrderItems(orderItems);
+         order.setOrderItems(orderItems);
         orderRepository.save(order);
 
         return new ResponseData<>(200, "Success", OrderDto.fromEntity(order));

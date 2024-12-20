@@ -26,6 +26,7 @@ public class OrderDto {
     private List<OrderItemDto> orderItems;
     private double totalBookPrice;
     private double shippingFee;
+    private double discount;
     private double totalPrice;
 
     public static OrderDto fromEntity(Order order) {
@@ -45,8 +46,8 @@ public class OrderDto {
                         .collect(Collectors.toList()))
                 .totalBookPrice(order.getTotalBookPrice())
                 .shippingFee(order.getShippingFee())
+                .discount(order.getTotalBookPrice()+order.getShippingFee()-order.getTotalPrice())
                 .totalPrice(order.getTotalPrice())
-
                 .build();
     }
 }

@@ -11,6 +11,7 @@ public class OrderForm {
     private Long addressId;
     private Order.PaymentMedthodEnum paymentMethod;
     private String phone;
+    private String voucher;
     private List<Long> cartItemIds;
     private String shippingUnit;
     private String note;
